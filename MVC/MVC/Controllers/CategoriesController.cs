@@ -29,16 +29,16 @@ namespace MVC.Controllers
 
                 return View(categoriesViews);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
 
         public ActionResult NewCategory()
         {
             return View();
-
         }
 
         [HttpPost]
@@ -49,9 +49,14 @@ namespace MVC.Controllers
                     logic.InsertOne(category);
                     return Redirect("/Categories/ListCategories");
             }
-            catch (Exception )
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
+                if (ModelState.IsValid)
+                {
+                    TempData["exMessage"] = ex.Message;
+                    return RedirectToAction("Error", "Error");
+                }
+                return View();
             }
         }
 
@@ -62,9 +67,14 @@ namespace MVC.Controllers
                 Categories categories = logic.GetOne(id);
                 return View(categories);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
+                if (ModelState.IsValid)
+                {
+                    TempData["exMessage"] = ex.Message;
+                    return RedirectToAction("Error", "Error");
+                }
+                return View();
             }
         }
 
@@ -80,9 +90,14 @@ namespace MVC.Controllers
                 }
                 return View(categories);
             }
-            catch (Exception )
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
+                if (ModelState.IsValid)
+                {
+                    TempData["exMessage"] = ex.Message;
+                    return RedirectToAction("Error", "Error");
+                }
+                return View();
             }
         }
         public ActionResult DeleteCategory(int id)
@@ -92,9 +107,10 @@ namespace MVC.Controllers
                 logic.DeleteOne(id);
                 return Redirect("/Categories/ListCategories");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
 
         }

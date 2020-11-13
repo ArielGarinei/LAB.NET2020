@@ -4,7 +4,6 @@ using MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Web.Mvc;
 
 namespace MVC.Controllers
@@ -29,9 +28,10 @@ namespace MVC.Controllers
 
                 return View(productsViews);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
 
@@ -45,13 +45,18 @@ namespace MVC.Controllers
         {
             try
             {
-                logic.InsertOne(products);
-                return Redirect("/Products/ListProducts");
+              
+                    logic.InsertOne(products);
+                    return Redirect("/Products/ListProducts");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
-
+                if (ModelState.IsValid)
+                {
+                    TempData["exMessage"] = ex.Message;
+                    return RedirectToAction("Error", "Error");
+                }
+                return View();
             }
         }
 
@@ -62,10 +67,14 @@ namespace MVC.Controllers
                 Products myProduct = logic.GetOne(id);
                 return View(myProduct);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
-
+                if (ModelState.IsValid)
+                {
+                    TempData["exMessage"] = ex.Message;
+                    return RedirectToAction("Error", "Error");
+                }
+                return View();
             }
         }
 
@@ -74,13 +83,17 @@ namespace MVC.Controllers
         {
             try
             {
-                    logic.Update(products);
-                    return Redirect("/Products/ListProducts");
+                logic.Update(products);
+                return Redirect("/Products/ListProducts");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
-
+                if (ModelState.IsValid)
+                {
+                    TempData["exMessage"] = ex.Message;
+                    return RedirectToAction("Error", "Error");
+                }
+                return View();
             }
         }
         public ActionResult DeleteProduct(int id)
@@ -90,9 +103,10 @@ namespace MVC.Controllers
                 logic.DeleteOne(id);
                 return Redirect("/Products/ListProducts");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Redirect("/Shared/Error");
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
     }
