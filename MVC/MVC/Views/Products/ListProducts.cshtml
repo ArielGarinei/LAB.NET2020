@@ -1,0 +1,35 @@
+﻿@model List<MVC.Models.ProductsView>
+@{
+    ViewBag.Title = "Products";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<div class="row" style="text-align:right;padding:5px">
+    <a href="~/Products/NewProduct" class="btn btn-primary">New Product</a>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Quantity Per Unit</th>
+                <th></th>
+            </tr>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.ProductID</td>
+                    <td>@product.ProductName</td>
+                    <td>@product.QuantityPerUnit</td>
+                    <td>
+                        <a class="btn btn-default" href="~/Products/EditProduct/@product.ProductID">Edit</a>
+                        <a class="btn btn-danger" href="~/Products/DeleteProduct/@product.ProductID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+﻿@model MVC.Entities.Products
+@{
+    ViewBag.Title = "NewProduct";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("NewProduct", "Products", FormMethod.Post))
+{
+    @Html.Partial("_FromProduct");
+}
+
+

@@ -1,0 +1,14 @@
+﻿@model MVC.Entities.Categories
+@{
+    ViewBag.Title = "New Category";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("NewCategory", "Categories", FormMethod.Post))
+{
+    @Html.Partial("_FormCategory");
+}
+
+
