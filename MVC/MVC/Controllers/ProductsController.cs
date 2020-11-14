@@ -41,22 +41,24 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewProduct(Products products)
+        public ActionResult NewProduct(ProductsView productView)
         {
             try
             {
-              
-                    logic.InsertOne(products);
+                if (ModelState.IsValid)
+                {
+                    Products product = new Products(){ ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
+                    logic.InsertOne(product);
                     return Redirect("/Products/ListProducts");
+                }
+                return View();
+
             }
             catch (Exception ex)
             {
-                if (ModelState.IsValid)
-                {
-                    TempData["exMessage"] = ex.Message;
-                    return RedirectToAction("Error", "Error");
-                }
-                return View();
+               
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
 
@@ -64,36 +66,40 @@ namespace MVC.Controllers
         {
             try
             {
-                Products myProduct = logic.GetOne(id);
-                return View(myProduct);
+                if (ModelState.IsValid)
+                {
+                    Products myProduct = logic.GetOne(id);
+                    ProductsView productsView = new ProductsView() { ProductID = myProduct.ProductID, ProductName = myProduct.ProductName, QuantityPerUnit = myProduct.QuantityPerUnit };
+                    return View(productsView);
+                }
+                return View();
+
             }
             catch (Exception ex)
             {
-                if (ModelState.IsValid)
-                {
-                    TempData["exMessage"] = ex.Message;
-                    return RedirectToAction("Error", "Error");
-                }
-                return View();
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
 
         [HttpPost]
-        public ActionResult EditProduct(Products products)
+        public ActionResult EditProduct(ProductsView productView)
         {
             try
             {
-                logic.Update(products);
-                return Redirect("/Products/ListProducts");
+                if (ModelState.IsValid)
+                {
+                    Products product = new Products() { ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
+
+                    logic.Update(product);
+                    return Redirect("/Products/ListProducts");
+                }
+                return View();
             }
             catch (Exception ex)
             {
-                if (ModelState.IsValid)
-                {
-                    TempData["exMessage"] = ex.Message;
-                    return RedirectToAction("Error", "Error");
-                }
-                return View();
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
         public ActionResult DeleteProduct(int id)

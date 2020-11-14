@@ -42,21 +42,22 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewCategory(Categories category)
+        public ActionResult NewCategory(CategoriesView categoriesView)
         {
             try
             {
-                    logic.InsertOne(category);
+                if (ModelState.IsValid)
+                {
+                    Categories categories = new Categories() {CategoryID = categoriesView.CategoryID , CategoryName = categoriesView.CategoryName, Description = categoriesView.Description};
+                    logic.InsertOne(categories);
                     return Redirect("/Categories/ListCategories");
+                }
+                return View();
             }
             catch (Exception ex)
             {
-                if (ModelState.IsValid)
-                {
-                    TempData["exMessage"] = ex.Message;
-                    return RedirectToAction("Error", "Error");
-                }
-                return View();
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
 
@@ -64,40 +65,42 @@ namespace MVC.Controllers
         {
             try
             {
-                Categories categories = logic.GetOne(id);
-                return View(categories);
+                if (ModelState.IsValid)
+                {
+                    Categories categories = logic.GetOne(id);
+                    CategoriesView categoriesView = new CategoriesView() { CategoryID = categories.CategoryID, CategoryName = categories.CategoryName, Description = categories.Description };
+
+                    return View(categoriesView);
+                }
+                return View();
             }
             catch (Exception ex)
             {
-                if (ModelState.IsValid)
-                {
-                    TempData["exMessage"] = ex.Message;
-                    return RedirectToAction("Error", "Error");
-                }
-                return View();
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
 
         [HttpPost]
-        public ActionResult EditCategory(Categories categories)
+        public ActionResult EditCategory(CategoriesView categoriesView)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    Categories categories = new Categories() { CategoryID = categoriesView.CategoryID, CategoryName = categoriesView.CategoryName, Description = categoriesView.Description };
+
                     logic.Update(categories);
                     return Redirect("/Categories/ListCategories");
                 }
-                return View(categories);
+                //return View(categories);
+                return View();
+
             }
             catch (Exception ex)
             {
-                if (ModelState.IsValid)
-                {
-                    TempData["exMessage"] = ex.Message;
-                    return RedirectToAction("Error", "Error");
-                }
-                return View();
+                TempData["exMessage"] = ex.Message;
+                return RedirectToAction("Error", "Error");
             }
         }
         public ActionResult DeleteCategory(int id)

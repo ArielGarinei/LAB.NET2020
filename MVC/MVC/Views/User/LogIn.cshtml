@@ -1,0 +1,39 @@
+﻿@model MVC.Models.UserView
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("LogIn", "User", FormMethod.Post))
+{
+    <div class="row">
+        <div class="alert">
+            <div>
+                @Html.LabelFor(d => d.name)
+                @Html.TextBoxFor(d => d.name, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(d => d.name, null, new { @class = "red" })
+            </div>
+            <div>
+                @Html.LabelFor(q => q.lastName)
+                @Html.TextBoxFor(q => q.lastName, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(q => q.lastName, null, new { @class = "red" })
+            </div>
+            <div>
+                @Html.LabelFor(q => q.email)
+                @Html.TextBoxFor(q => q.email, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(q => q.email, null, new { @class = "red" })
+            </div>
+            @*<div>
+                @Html.LabelFor(q => q.BirthDate)
+                @Html.EditorFor(q => q.BirthDate, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(q => q.BirthDate, null, new { @class = "red" })
+            </div>*@
+        </div>
+        <br />
+        <div style="text-align:right;">
+            <input type="submit" class="btn btn-primary" value="Save" />
+        </div>
+    </div>
+}
