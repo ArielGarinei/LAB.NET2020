@@ -46,7 +46,7 @@ namespace MVC.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (ModelState.IsValid) //devuelbe falso
                 {
                     Categories categories = new Categories() {CategoryID = categoriesView.CategoryID , CategoryName = categoriesView.CategoryName, Description = categoriesView.Description};
                     logic.InsertOne(categories);

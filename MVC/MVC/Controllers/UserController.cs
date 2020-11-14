@@ -5,6 +5,7 @@ namespace MVC.Controllers
 {
     public class UserController : Controller
     {
+
         // GET: User
         public ActionResult LogIn()
         {
@@ -15,10 +16,8 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                Session["StartedSession"] = "Loged";
-                ViewBag.UserName = userview.name;
-                ViewBag.UserLastName = userview.lastName;
-                ViewBag.UserEmail = userview.email;
+                Session["UserName"] = userview.name;
+                Session["UserEmail"] = userview.email;
                 return RedirectToAction("Index", "Home");
             
             }

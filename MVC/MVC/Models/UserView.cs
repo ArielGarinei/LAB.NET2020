@@ -11,9 +11,6 @@ namespace MVC.Models
         [Required]
         public string name { get; set; }
         [Required]
-        public string lastName { get; set; }
-
-        [Required]
         [EmailAddress]
         public string email { get; set; }
     }

@@ -45,7 +45,7 @@ namespace MVC.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (ModelState.IsValid) //devuelve falso
                 {
                     Products product = new Products(){ ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
                     logic.InsertOne(product);
