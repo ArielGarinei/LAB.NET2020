@@ -1,0 +1,35 @@
+﻿@model MVC.Models.Planets
+
+@{
+    ViewBag.Title = "Planets";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<div class="row" style="text-align:right;padding:5px">
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Gravity</th>
+                <th>Rotation Period</th>
+                <th></th>
+            </tr>
+            @{ 
+                var list = Model.results;
+                foreach (var planets in list)
+                {
+                    <tr>
+                        <td>@planets.name</td>
+                        <td>@planets.gravity</td>
+                        <td>@planets.rotation_period\</td>
+
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
