@@ -1,9 +1,11 @@
 ﻿using MVC.Entities;
 using MVC.Logic;
 using MVC.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 
 namespace MVC.Controllers
@@ -18,13 +20,16 @@ namespace MVC.Controllers
             {
                 
                 List<Products> lst;
-                lst = logic.GetAll();
-                List<ProductsView> productsViews = (from products in lst
-                                                    select new ProductsView()
-                                                    {   ProductID = products.ProductID,
-                                                        ProductName = products.ProductName,
-                                                        QuantityPerUnit = products.QuantityPerUnit
-                                                    }).ToList();
+                //lst = logic.GetAll();
+                //List<ProductsView> productsViews = (from products in lst
+                //                                    select new ProductsView()
+                //                                    {   ProductID = products.ProductID,
+                //                                        ProductName = products.ProductName,
+                //                                        QuantityPerUnit = products.QuantityPerUnit
+                //                                    }).ToList();
+
+                var json = new WebClient().DownloadString("https://localhost:44369/api/Products");
+                var productsViews = JsonConvert.DeserializeObject<List<ProductsView>>(json);
 
                 return View(productsViews);
             }
