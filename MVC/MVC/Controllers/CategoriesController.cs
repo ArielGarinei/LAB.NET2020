@@ -38,7 +38,7 @@ namespace MVC.Controllers
 
         public ActionResult NewCategory()
         {
-            return View();
+            return View(new CategoriesView());
         }
 
         [HttpPost]

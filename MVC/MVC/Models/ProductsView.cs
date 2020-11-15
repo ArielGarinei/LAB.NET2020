@@ -8,7 +8,7 @@ namespace MVC.Models
 {
     public class ProductsView
     {
-        [Key]
+        //[Key]
         public int ProductID { get; set; }
         [Required]
         [StringLength(40)]

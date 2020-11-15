@@ -26,7 +26,7 @@
                     <td>@product.QuantityPerUnit</td>
                     <td>
                         <a class="btn btn-default" href="~/Products/EditProduct/@product.ProductID">Edit</a>
-                        <a class="btn btn-danger" href="~/Products/DeleteProduct/@product.ProductID">Delete</a>
+                        <a class="btn btn-danger" href="~/Products/DeleteProduct/@product.ProductID" onclick = "return confirm('Esta seguro que quiere eliminar el producto?')" >Delete</a>
                     </td>
                 </tr>
             }

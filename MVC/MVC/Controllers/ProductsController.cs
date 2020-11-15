@@ -37,7 +37,7 @@ namespace MVC.Controllers
 
         public ActionResult NewProduct()
         {
-            return View();
+            return View(new ProductsView());
         }
 
         [HttpPost]

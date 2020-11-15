@@ -10,7 +10,7 @@ namespace MVC.Models
         public int count { get; set; }
         public string next { get; set; }
         public object previous { get; set; }
-        public IList<Planets_SW> results { get; set; }
+        public IList<Planet> results { get; set; }
     }
 
 }

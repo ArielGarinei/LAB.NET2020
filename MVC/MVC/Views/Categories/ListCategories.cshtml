@@ -21,15 +21,15 @@
             </tr>
             @foreach (var category in Model)
             {
-                <tr>
-                    <td>@category.CategoryID</td>
-                    <td>@category.CategoryName</td>
-                    <td>@category.Description</td>
-                    <td>
-                        <a class="btn btn-default" href="~/Categories/EditCategory/@category.CategoryID">Edit</a>
-                        <a class="btn btn-danger" href="~/Categories/DeleteCategory/@category.CategoryID">Delete</a>
-                    </td>
-                </tr>
+        <tr>
+            <td>@category.CategoryID</td>
+            <td>@category.CategoryName</td>
+            <td>@category.Description</td>
+            <td>
+                <a class="btn btn-default" href="~/Categories/EditCategory/@category.CategoryID">Edit</a>
+                <a class="btn btn-danger" href="~/Categories/DeleteCategory/@category.CategoryID" onclick = "return confirm('Esta seguro que quiere eliminar la categoria?')">Delete</a>
+            </td>
+        </tr>
             }
         </table>
     </div>

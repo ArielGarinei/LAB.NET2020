@@ -137,7 +137,7 @@
     </Compile>
     <Compile Include="Models\ArrayList.cs" />
     <Compile Include="Models\Planets.cs" />
-    <Compile Include="Models\Planets_SW.cs" />
+    <Compile Include="Models\Planet.cs" />
     <Compile Include="Models\ProductsView.cs" />
     <Compile Include="Models\CategoriesView.cs" />
     <Compile Include="Models\UserView.cs" />

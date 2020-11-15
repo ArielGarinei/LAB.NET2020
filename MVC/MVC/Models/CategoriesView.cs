@@ -9,7 +9,7 @@ namespace MVC.Models
 {
     public class CategoriesView
     {
-        [Key]
+        //[Key]
         public int CategoryID { get; set; }
         [Required]
         [StringLength(15)]
