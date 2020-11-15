@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace MVC.Controllers
@@ -14,24 +17,35 @@ namespace MVC.Controllers
     {
         // GET: Products
         private Logic<Products> logic = new Logic<Products>();
-        public ActionResult ListProducts()
+        public async Task<ActionResult>ListProducts()
         {
             try
             {
-                
-                List<Products> lst;
+
+                //List<Products> lst;
                 //lst = logic.GetAll();
-                //List<ProductsView> productsViews = (from products in lst
-                //                                    select new ProductsView()
-                //                                    {   ProductID = products.ProductID,
-                //                                        ProductName = products.ProductName,
-                //                                        QuantityPerUnit = products.QuantityPerUnit
-                //                                    }).ToList();
 
-                var json = new WebClient().DownloadString("https://localhost:44369/api/Products");
-                var productsViews = JsonConvert.DeserializeObject<List<ProductsView>>(json);
+                string url = "https://localhost:44364/api/Products";
+                var client = new HttpClient();
+                var httpRespoonse = await client.GetAsync(url);
+                if (httpRespoonse.IsSuccessStatusCode)
+                {
+                    var result = await httpRespoonse.Content.ReadAsStringAsync();
 
-                return View(productsViews);
+                    var products = JsonConvert.DeserializeObject<List<Products>>(result);
+                    List<ProductsView> productsViews = (from product in products
+                                                        select new ProductsView()
+                                                        {
+                                                            ProductID = product.ProductID,
+                                                            ProductName = product.ProductName,
+                                                            QuantityPerUnit = product.QuantityPerUnit
+                                                        }).ToList();
+
+                    return View(productsViews);
+
+                }
+                return RedirectToAction("Error", "Error");
+
             }
             catch (Exception ex)
             {
@@ -46,14 +60,27 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewProduct(ProductsView productView)
+        public async Task<ActionResult> NewProduct(ProductsView productView)
         {
             try
             {
-                if (ModelState.IsValid) //devuelve falso
+                if (ModelState.IsValid)
                 {
-                    Products product = new Products(){ ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
-                    logic.InsertOne(product);
+
+
+                    Products product = new Products() { ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
+                    string url = "https://localhost:44364/api/Products";
+                    var client = new HttpClient();
+                    var data = JsonConvert.SerializeObject(product);
+                    HttpContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                    var httpRespoonse = await client.PostAsync(url, content);
+                    if (httpRespoonse.IsSuccessStatusCode)
+                    {
+                        var result = await httpRespoonse.Content.ReadAsStringAsync();
+                    }
+
+                    //Products product = new Products(){ ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
+                    //logic.InsertOne(product);
                     return Redirect("/Products/ListProducts");
                 }
                 return View();
@@ -88,15 +115,27 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditProduct(ProductsView productView)
+        public async Task<ActionResult> EditProduct(ProductsView productView)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
                     Products product = new Products() { ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
+                    string url = "https://localhost:44364/api/Products/" + product.ProductID;
+                    var client = new HttpClient();
+                    var data = JsonConvert.SerializeObject(product);
+                    HttpContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                    var httpRespoonse = await client.PutAsync(url, content);
+                    if (httpRespoonse.IsSuccessStatusCode)
+                    {
+                        var result = await httpRespoonse.Content.ReadAsStringAsync();
+                    }
 
-                    logic.Update(product);
+
+
+
+                    //logic.Update(product);
                     return Redirect("/Products/ListProducts");
                 }
                 return View();
@@ -107,12 +146,22 @@ namespace MVC.Controllers
                 return RedirectToAction("Error", "Error");
             }
         }
-        public ActionResult DeleteProduct(int id)
+        public async Task<ActionResult> DeleteProduct(int id)
         {
             try
             {
-                logic.DeleteOne(id);
-                return Redirect("/Products/ListProducts");
+                string url = "https://localhost:44364/api/Products/" + id.ToString();
+                var client = new HttpClient();
+                var httpRespoonse = await client.DeleteAsync(url);
+                if (httpRespoonse.IsSuccessStatusCode)
+                {
+                    return Redirect("/Products/ListProducts");
+                }
+
+
+                return RedirectToAction("Error", "Error");
+
+                //logic.DeleteOne(id);
             }
             catch (Exception ex)
             {
