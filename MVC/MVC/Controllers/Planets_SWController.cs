@@ -11,17 +11,29 @@ namespace MVC.Controllers
 {
     public class Planets_SWController : Controller
     {
-
-
         // GET: Planets_SW
+        
         public ActionResult ListPlanets_SW()
         {
 
-            var json = new WebClient().DownloadString("https://swapi.dev/api/planets/");
+            string url = "https://swapi.dev/api/planets/?page=1";
+            ViewBag.page = 1;
+            var json = new WebClient().DownloadString(url);
             var Planets = JsonConvert.DeserializeObject<Planets>(json);
 
             return View(Planets);
 
         }
+        //public ActionResult ListPlanets_SW(int page)
+        //{
+        //    ViewBag.page = page;
+        //    string url = "https://swapi.dev/api/planets/?page=" + page.ToString();
+        //    var json = new WebClient().DownloadString(url);
+        //    var Planets = JsonConvert.DeserializeObject<Planets>(json);
+
+        //    return View(Planets);
+
+        //}
+
     }
 }

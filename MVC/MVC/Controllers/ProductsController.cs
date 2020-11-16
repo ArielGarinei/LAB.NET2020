@@ -21,31 +21,18 @@ namespace MVC.Controllers
         {
             try
             {
-
                 //List<Products> lst;
                 //lst = logic.GetAll();
-
-                string url = "https://localhost:44364/api/Products";
-                var client = new HttpClient();
-                var httpRespoonse = await client.GetAsync(url);
-                if (httpRespoonse.IsSuccessStatusCode)
-                {
-                    var result = await httpRespoonse.Content.ReadAsStringAsync();
-
-                    var products = JsonConvert.DeserializeObject<List<Products>>(result);
-                    List<ProductsView> productsViews = (from product in products
-                                                        select new ProductsView()
-                                                        {
-                                                            ProductID = product.ProductID,
-                                                            ProductName = product.ProductName,
-                                                            QuantityPerUnit = product.QuantityPerUnit
-                                                        }).ToList();
-
+                string result = await logic.GetAllApiProductsAsync();
+                var products = JsonConvert.DeserializeObject<List<Products>>(result);
+                List<ProductsView> productsViews = (from product in products
+                                                    select new ProductsView()
+                                                    {
+                                                     ProductID = product.ProductID,
+                                                     ProductName = product.ProductName,
+                                                     QuantityPerUnit = product.QuantityPerUnit
+                                                    }).ToList();
                     return View(productsViews);
-
-                }
-                return RedirectToAction("Error", "Error");
-
             }
             catch (Exception ex)
             {
@@ -66,20 +53,8 @@ namespace MVC.Controllers
             {
                 if (ModelState.IsValid)
                 {
-
-
                     Products product = new Products() { ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
-                    string url = "https://localhost:44364/api/Products";
-                    var client = new HttpClient();
-                    var data = JsonConvert.SerializeObject(product);
-                    HttpContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-                    var httpRespoonse = await client.PostAsync(url, content);
-                    if (httpRespoonse.IsSuccessStatusCode)
-                    {
-                        var result = await httpRespoonse.Content.ReadAsStringAsync();
-                    }
-
-                    //Products product = new Products(){ ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
+                    await logic.PostApiProductsAsync(product);
                     //logic.InsertOne(product);
                     return Redirect("/Products/ListProducts");
                 }
@@ -94,13 +69,16 @@ namespace MVC.Controllers
             }
         }
 
-        public ActionResult EditProduct(int id)
+        public async Task<ActionResult> EditProduct(int id)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    Products myProduct = logic.GetOne(id);
+                    var result = await logic.GetApiProductsAsync(id);
+                    var myProduct = JsonConvert.DeserializeObject<Products>(result);
+
+                    //Products myProduct = logic.GetOne(id);
                     ProductsView productsView = new ProductsView() { ProductID = myProduct.ProductID, ProductName = myProduct.ProductName, QuantityPerUnit = myProduct.QuantityPerUnit };
                     return View(productsView);
                 }
@@ -122,19 +100,7 @@ namespace MVC.Controllers
                 if (ModelState.IsValid)
                 {
                     Products product = new Products() { ProductID = productView.ProductID, ProductName = productView.ProductName, QuantityPerUnit = productView.QuantityPerUnit };
-                    string url = "https://localhost:44364/api/Products/" + product.ProductID;
-                    var client = new HttpClient();
-                    var data = JsonConvert.SerializeObject(product);
-                    HttpContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-                    var httpRespoonse = await client.PutAsync(url, content);
-                    if (httpRespoonse.IsSuccessStatusCode)
-                    {
-                        var result = await httpRespoonse.Content.ReadAsStringAsync();
-                    }
-
-
-
-
+                    await logic.PutApiProductsAsync(product, product.ProductID);
                     //logic.Update(product);
                     return Redirect("/Products/ListProducts");
                 }
@@ -150,18 +116,9 @@ namespace MVC.Controllers
         {
             try
             {
-                string url = "https://localhost:44364/api/Products/" + id.ToString();
-                var client = new HttpClient();
-                var httpRespoonse = await client.DeleteAsync(url);
-                if (httpRespoonse.IsSuccessStatusCode)
-                {
-                    return Redirect("/Products/ListProducts");
-                }
-
-
-                return RedirectToAction("Error", "Error");
-
+                await logic.DeleteApiProductsAsync(id);
                 //logic.DeleteOne(id);
+                return Redirect("/Products/ListProducts");
             }
             catch (Exception ex)
             {

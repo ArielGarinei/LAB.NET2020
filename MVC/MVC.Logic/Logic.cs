@@ -1,8 +1,11 @@
 ﻿using MVC.ResourceAccess;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace MVC.Logic
 {
@@ -11,12 +14,125 @@ namespace MVC.Logic
 
         private readonly NorthwindContext context;
         private IDbSet<T> dbEntity;
+        string url = "https://localhost:44364/api/Products/";
+        HttpClient client = new HttpClient();
 
         public Logic()
         {
             this.context = new NorthwindContext();
             this.dbEntity = context.Set<T>();
         }
+
+        public async Task<string> GetAllApiProductsAsync()
+        {
+            try
+            {
+                var httpRespoonse = await client.GetAsync(url);
+                if (httpRespoonse.IsSuccessStatusCode)
+                {
+                    var result = await httpRespoonse.Content.ReadAsStringAsync();
+                    return result;
+                }
+                throw new CustomException("No se pudo Pedir el elemento");
+            }
+            catch (Exception)
+            {
+
+                throw new CustomException("Ocurrio un error inesperado");
+            }
+
+        }
+
+        public async Task<string> GetApiProductsAsync(int id)
+        {
+            try
+            {
+                var httpRespoonse = await client.GetAsync(url + id.ToString());
+                if (httpRespoonse.IsSuccessStatusCode)
+                {
+                    var result = await httpRespoonse.Content.ReadAsStringAsync();
+                    return result;
+                }
+                throw new CustomException("No se pudo Pedir el elemento");
+            }
+            catch (Exception)
+            {
+
+                throw new CustomException("Ocurrio un error inesperado");
+            }
+
+        }
+
+
+        public async Task<string> PostApiProductsAsync(T entity)
+        {
+            try
+            {
+                var data = JsonConvert.SerializeObject(entity);
+                HttpContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                var httpRespoonse = await client.PostAsync(url, content);
+                if (httpRespoonse.IsSuccessStatusCode)
+                {
+                    var result = await httpRespoonse.Content.ReadAsStringAsync();
+                    return result;
+                }
+                throw new CustomException("No se pudo Postear el elemento");
+            }
+            catch (Exception)
+            {
+                throw new CustomException("Ocurrio un error inesperado");
+            }
+
+        }
+
+
+        public async Task<string> PutApiProductsAsync(T entity, int id)
+        {
+            try
+            {
+                var data = JsonConvert.SerializeObject(entity);
+                HttpContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                var httpRespoonse = await client.PutAsync(url + id.ToString() , content);
+                if (httpRespoonse.IsSuccessStatusCode)
+                {
+                    var result = await httpRespoonse.Content.ReadAsStringAsync();
+                    return result;
+                }
+                throw new CustomException("No se pudo Postear el elemento");
+            }
+            catch (Exception)
+            {
+
+                throw new CustomException("Ocurrio un error inesperado");
+            }
+
+        }
+        public async Task<string> DeleteApiProductsAsync(int id)
+        {
+            try
+            {
+                var httpRespoonse = await client.DeleteAsync(url + id.ToString());
+
+                if (httpRespoonse.IsSuccessStatusCode)
+                {
+                    var result = await httpRespoonse.Content.ReadAsStringAsync();
+                    return result;
+                }
+                throw new CustomException("No se pudo eliminar el elemento");
+            }
+            catch (Exception)
+            {
+                throw new CustomException("Ocurrio un error inesperado");
+            }
+
+        }
+
+
+
+
+
+
+
         public List<T> GetAll()
         {
             return dbEntity.ToList();
